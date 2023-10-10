@@ -7243,6 +7243,16 @@ function getFileName(docName) {
     return fileName;
 }
 class AutomaticBackup extends s$2 {
+    constructor() {
+        super(...arguments);
+        this.editCount = -1;
+        this.usedDirectory = '';
+        this.usedFileNames = [];
+        this.timerId = 0;
+        this.docByteSize = 0;
+        this.cancelDialog = false;
+        this.lastEditCount = -2;
+    }
     set enabled(state) {
         const oldVal = this.enabled;
         localStorage.setItem('oscd-automatic-backup-enabled', `${state}`);
@@ -7272,18 +7282,6 @@ class AutomaticBackup extends s$2 {
         var _a;
         return parseInt((_a = localStorage.getItem('oscd-automatic-backup-count')) !== null && _a !== void 0 ? _a : '10', 10);
     }
-    constructor() {
-        super();
-        this.usedDirectory = '';
-        this.usedFileNames = [];
-        this.timerId = 0;
-        this.docByteSize = 0;
-        this.cancelDialog = false;
-        this.applicationInactive = false;
-        document.addEventListener('visibilitychange', () => {
-            this.applicationInactive = document.hidden;
-        }, false);
-    }
     async run() {
         this.docByteSize = new XMLSerializer().serializeToString(this.doc).length;
         this.calculateUsage();
@@ -7308,10 +7306,7 @@ class AutomaticBackup extends s$2 {
     }
     firstUpdated() {
         this.dialogUI.addEventListener('closed', async () => {
-            // resolve();
             var _a, _b;
-            // user clicked cancel
-            // const detail = <MDCDialogCloseEventDetail>event.detail;
             if (this.cancelDialog) {
                 return;
             }
@@ -7330,15 +7325,12 @@ class AutomaticBackup extends s$2 {
                     var _a;
                     if (!this.doc)
                         return;
-                    // don't keep saving if the application is not being used
-                    if (
-                    // possibly don't need all these.
-                    this.applicationInactive ||
-                        !document.hasFocus() ||
-                        document.hidden) {
-                        console.info('Inactive brwoser, not creating a backup', this.applicationInactive, !document.hasFocus(), document.hidden);
+                    // don't keep saving if the application if no changes are made
+                    if (this.lastEditCount === this.editCount) {
+                        console.info('No document changes, no new backup created', this.lastEditCount, this.editCount);
                         return;
                     }
+                    this.lastEditCount = this.editCount;
                     // remove file if we would breach the limit
                     if (this.usedFileNames.length + 1 > this.count) {
                         const fileToRemove = this.usedFileNames.shift();
@@ -7361,7 +7353,6 @@ class AutomaticBackup extends s$2 {
                 (_b = this.messageNotSupportedUI) === null || _b === void 0 ? void 0 : _b.show();
             }
         });
-        // });
     }
     // TODO: Update URL when subscriber later binding is shepherded by OpenSCD organisation
     render() {
@@ -7477,6 +7468,9 @@ __decorate([
 __decorate([
     n$3()
 ], AutomaticBackup.prototype, "docname", void 0);
+__decorate([
+    n$3()
+], AutomaticBackup.prototype, "editCount", void 0);
 __decorate([
     n$3({ attribute: false })
 ], AutomaticBackup.prototype, "usedDirectory", void 0);

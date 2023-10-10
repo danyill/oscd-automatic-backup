@@ -13,6 +13,7 @@ export default class AutomaticBackup extends LitElement {
     /** The document being edited as provided to plugins by [[`OpenSCD`]]. */
     doc: XMLDocument;
     docname: string;
+    editCount: number;
     usedDirectory: string;
     usedFileNames: string[];
     dialogUI?: Dialog;
@@ -26,14 +27,13 @@ export default class AutomaticBackup extends LitElement {
     timerId: number;
     docByteSize: number;
     cancelDialog: boolean;
-    applicationInactive: boolean;
+    lastEditCount: number;
     set enabled(state: boolean);
     get enabled(): boolean;
     set interval(interval: number);
     get interval(): number;
     set count(count: number);
     get count(): number;
-    constructor();
     run(): Promise<void>;
     calculateUsage(): void;
     protected firstUpdated(): void;
