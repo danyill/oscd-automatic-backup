@@ -70,6 +70,8 @@ export default class AutomaticBackup extends LitElement {
 
   cancelDialog: boolean = false;
 
+  applicationInactive: boolean = false;
+
   set enabled(state: boolean) {
     const oldVal = this.enabled;
     localStorage.setItem('oscd-automatic-backup-enabled', `${state}`);
@@ -109,6 +111,18 @@ export default class AutomaticBackup extends LitElement {
     return parseInt(
       localStorage.getItem('oscd-automatic-backup-count') ?? '10',
       10
+    );
+  }
+
+  constructor() {
+    super();
+
+    document.addEventListener(
+      'visibilitychange',
+      () => {
+        this.applicationInactive = document.hidden;
+      },
+      false
     );
   }
 
@@ -165,6 +179,21 @@ export default class AutomaticBackup extends LitElement {
         this.timerId = window.setInterval(async () => {
           if (!this.doc) return;
 
+          // don't keep saving if the application is not being used
+          if (
+            // possibly don't need all these.
+            this.applicationInactive ||
+            !document.hasFocus() ||
+            document.hidden
+          ) {
+            console.info(
+              'Inactive brwoser, not creating a backup',
+              this.applicationInactive,
+              !document.hasFocus(),
+              document.hidden
+            );
+            return;
+          }
           // remove file if we would breach the limit
           if (this.usedFileNames.length + 1 > this.count) {
             const fileToRemove = this.usedFileNames.shift()!;
@@ -256,6 +285,7 @@ export default class AutomaticBackup extends LitElement {
           slot="primaryAction"
           dialogAction="ok"
           icon="folder_open"
+          ?disabled=${!this.enabled}
           @click=${async () => {
             // TODO: Remove when open-scd uses later version of mwc-components.
             this.enabled =
