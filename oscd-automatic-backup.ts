@@ -43,6 +43,9 @@ export default class AutomaticBackup extends LitElement {
   @property()
   docname!: string;
 
+  @property()
+  editCount: number = -1;
+
   @property({ attribute: false })
   usedDirectory: string = '';
 
@@ -70,7 +73,7 @@ export default class AutomaticBackup extends LitElement {
 
   cancelDialog: boolean = false;
 
-  applicationInactive: boolean = false;
+  lastEditCount: number = -2;
 
   set enabled(state: boolean) {
     const oldVal = this.enabled;
@@ -114,18 +117,6 @@ export default class AutomaticBackup extends LitElement {
     );
   }
 
-  constructor() {
-    super();
-
-    document.addEventListener(
-      'visibilitychange',
-      () => {
-        this.applicationInactive = document.hidden;
-      },
-      false
-    );
-  }
-
   async run(): Promise<void> {
     this.docByteSize = new XMLSerializer().serializeToString(this.doc).length;
     this.calculateUsage();
@@ -155,11 +146,6 @@ export default class AutomaticBackup extends LitElement {
 
   protected firstUpdated(): void {
     this.dialogUI!.addEventListener('closed', async () => {
-      // resolve();
-
-      // user clicked cancel
-      // const detail = <MDCDialogCloseEventDetail>event.detail;
-
       if (this.cancelDialog) {
         return;
       }
@@ -179,21 +165,17 @@ export default class AutomaticBackup extends LitElement {
         this.timerId = window.setInterval(async () => {
           if (!this.doc) return;
 
-          // don't keep saving if the application is not being used
-          if (
-            // possibly don't need all these.
-            this.applicationInactive ||
-            !document.hasFocus() ||
-            document.hidden
-          ) {
+          // don't keep saving if the application if no changes are made
+          if (this.lastEditCount === this.editCount) {
             console.info(
-              'Inactive brwoser, not creating a backup',
-              this.applicationInactive,
-              !document.hasFocus(),
-              document.hidden
+              'No document changes, no new backup created',
+              this.lastEditCount,
+              this.editCount
             );
             return;
           }
+          this.lastEditCount = this.editCount;
+
           // remove file if we would breach the limit
           if (this.usedFileNames.length + 1 > this.count) {
             const fileToRemove = this.usedFileNames.shift()!;
@@ -222,7 +204,6 @@ export default class AutomaticBackup extends LitElement {
         this.messageNotSupportedUI?.show();
       }
     });
-    // });
   }
 
   // TODO: Update URL when subscriber later binding is shepherded by OpenSCD organisation
