@@ -26,12 +26,14 @@ export default class AutomaticBackup extends LitElement {
     timerId: number;
     docByteSize: number;
     cancelDialog: boolean;
+    applicationInactive: boolean;
     set enabled(state: boolean);
     get enabled(): boolean;
     set interval(interval: number);
     get interval(): number;
     set count(count: number);
     get count(): number;
+    constructor();
     run(): Promise<void>;
     calculateUsage(): void;
     protected firstUpdated(): void;

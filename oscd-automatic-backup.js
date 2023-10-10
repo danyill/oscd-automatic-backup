@@ -7243,14 +7243,6 @@ function getFileName(docName) {
     return fileName;
 }
 class AutomaticBackup extends s$2 {
-    constructor() {
-        super(...arguments);
-        this.usedDirectory = '';
-        this.usedFileNames = [];
-        this.timerId = 0;
-        this.docByteSize = 0;
-        this.cancelDialog = false;
-    }
     set enabled(state) {
         const oldVal = this.enabled;
         localStorage.setItem('oscd-automatic-backup-enabled', `${state}`);
@@ -7279,6 +7271,18 @@ class AutomaticBackup extends s$2 {
     get count() {
         var _a;
         return parseInt((_a = localStorage.getItem('oscd-automatic-backup-count')) !== null && _a !== void 0 ? _a : '10', 10);
+    }
+    constructor() {
+        super();
+        this.usedDirectory = '';
+        this.usedFileNames = [];
+        this.timerId = 0;
+        this.docByteSize = 0;
+        this.cancelDialog = false;
+        this.applicationInactive = false;
+        document.addEventListener('visibilitychange', () => {
+            this.applicationInactive = document.hidden;
+        }, false);
     }
     async run() {
         this.docByteSize = new XMLSerializer().serializeToString(this.doc).length;
@@ -7326,6 +7330,15 @@ class AutomaticBackup extends s$2 {
                     var _a;
                     if (!this.doc)
                         return;
+                    // don't keep saving if the application is not being used
+                    if (
+                    // possibly don't need all these.
+                    this.applicationInactive ||
+                        !document.hasFocus() ||
+                        document.hidden) {
+                        console.info('Inactive brwoser, not creating a backup', this.applicationInactive, !document.hasFocus(), document.hidden);
+                        return;
+                    }
                     // remove file if we would breach the limit
                     if (this.usedFileNames.length + 1 > this.count) {
                         const fileToRemove = this.usedFileNames.shift();
@@ -7411,6 +7424,7 @@ class AutomaticBackup extends s$2 {
           slot="primaryAction"
           dialogAction="ok"
           icon="folder_open"
+          ?disabled=${!this.enabled}
           @click=${async () => {
             var _a, _b, _c, _d, _e, _f;
             // TODO: Remove when open-scd uses later version of mwc-components.
