@@ -296,7 +296,7 @@ export default class AutomaticBackup extends LitElement {
       <mwc-snackbar
         id="automaticBackupActive"
         leading
-        labelText="Every ${this
+        labelText="When changes are being made, every ${this
           .interval} minute(s) a backup will be taken, retaining the ${this
           .count} most recent backups."
       >
