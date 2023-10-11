@@ -41,7 +41,7 @@ export default class AutomaticBackup extends LitElement {
   doc!: XMLDocument;
 
   @property()
-  docname!: string;
+  docName!: string;
 
   @property()
   editCount: number = -1;
@@ -183,7 +183,7 @@ export default class AutomaticBackup extends LitElement {
             await directoryHandle.removeEntry(fileToRemove);
           }
 
-          const fileName = getFileName(this.docname);
+          const fileName = getFileName(this.docName);
           this.usedFileNames.push(fileName);
           const fileHandle = await directoryHandle.getFileHandle(fileName, {
             create: true,
