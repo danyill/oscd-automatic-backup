@@ -7394,10 +7394,18 @@ class AutomaticBackup extends s$2 {
             id="enabled"
             ?selected=${this.enabled}
             ?checked=${this.enabled}
-            @click=${() => {
-            var _a;
+            @change=${() => {
+            // change event added to support older component version
+            // can be removed when open-scd updates to latest component versions
             this.enabled =
-                ((_a = this.enabledUI) === null || _a === void 0 ? void 0 : _a.selected) ||
+                this.enabledUI.selected ||
+                    this.enabledUI.checked ||
+                    false;
+            this.calculateUsage();
+        }}
+            @click=${() => {
+            this.enabled =
+                this.enabledUI.selected ||
                     this.enabledUI.checked ||
                     false;
             this.calculateUsage();
@@ -7416,14 +7424,6 @@ class AutomaticBackup extends s$2 {
           dialogAction="ok"
           icon="folder_open"
           ?disabled=${!this.enabled}
-          @click=${async () => {
-            var _a, _b, _c, _d, _e, _f;
-            // TODO: Remove when open-scd uses later version of mwc-components.
-            this.enabled =
-                (_b = (_a = this.enabledUI.selected) !== null && _a !== void 0 ? _a : this.enabledUI.checked) !== null && _b !== void 0 ? _b : false;
-            this.interval = parseInt((_d = (_c = this.intervalUI) === null || _c === void 0 ? void 0 : _c.value) !== null && _d !== void 0 ? _d : '10', 10);
-            this.count = parseInt((_f = (_e = this.countUI) === null || _e === void 0 ? void 0 : _e.value) !== null && _f !== void 0 ? _f : '6', 10);
-        }}
         ></mwc-button>
         <mwc-button
           label="Cancel"
