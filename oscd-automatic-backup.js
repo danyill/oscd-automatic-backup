@@ -7424,6 +7424,11 @@ class AutomaticBackup extends s$2 {
           dialogAction="ok"
           icon="folder_open"
           ?disabled=${!this.enabled}
+          @click=${async () => {
+            var _a, _b, _c, _d;
+            this.interval = parseInt((_b = (_a = this.intervalUI) === null || _a === void 0 ? void 0 : _a.value) !== null && _b !== void 0 ? _b : '10', 10);
+            this.count = parseInt((_d = (_c = this.countUI) === null || _c === void 0 ? void 0 : _c.value) !== null && _d !== void 0 ? _d : '6', 10);
+        }}
         ></mwc-button>
         <mwc-button
           label="Cancel"
