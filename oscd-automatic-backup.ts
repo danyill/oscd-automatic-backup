@@ -246,9 +246,18 @@ export default class AutomaticBackup extends LitElement {
             id="enabled"
             ?selected=${this.enabled}
             ?checked=${this.enabled}
+            @change=${() => {
+              // change event added to support older component version
+              // can be removed when open-scd updates to latest component versions
+              this.enabled =
+                this.enabledUI!.selected ||
+                (<any>this.enabledUI!).checked ||
+                false;
+              this.calculateUsage();
+            }}
             @click=${() => {
               this.enabled =
-                this.enabledUI?.selected ||
+                this.enabledUI!.selected ||
                 (<any>this.enabledUI!).checked ||
                 false;
               this.calculateUsage();
@@ -267,16 +276,6 @@ export default class AutomaticBackup extends LitElement {
           dialogAction="ok"
           icon="folder_open"
           ?disabled=${!this.enabled}
-          @click=${async () => {
-            // TODO: Remove when open-scd uses later version of mwc-components.
-            this.enabled =
-              this.enabledUI!.selected ??
-              (<any>this.enabledUI!).checked ??
-              false;
-
-            this.interval = parseInt(this.intervalUI?.value ?? '10', 10);
-            this.count = parseInt(this.countUI?.value ?? '6', 10);
-          }}
         ></mwc-button>
         <mwc-button
           label="Cancel"

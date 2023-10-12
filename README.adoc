@@ -25,7 +25,8 @@
 
 == What is this?
 
-This is an OpenSCD core plugin to allow automatic backups of SCL files using the File System API.
+This is an OpenSCD core plugin to allow automatic backups of SCL files using the File System API. 
+{uri-openscd-core-plugin-demo}[Try it out online]!
 
 * The user chooses the number and frequency of backups and allows the plugin to write to a specific folder.
 Backups are then taken when the plugin is active with the oldest removed first to ensure the number of backups does not exceed selected amount.
@@ -36,36 +37,23 @@ Backups are then taken when the plugin is active with the oldest removed first t
 
 * This plugin uses the link:LICENSE[Apache License] and is intended for you to use, study, share and improve.
 
-{uri-openscd-core-plugin-demo}[Try it out online]!
-
 Feel free to log issues to request fixes, improvements or new features.
-
-== How it works
-
-. This plugin does only two things:
-
-* If two adjacent `ExtRef` elements have the same intAddr except there is a `q` then if in the subscribing dataset the adjacent FCDA elements are the same except the second is a quality attribute, then the quality will be automatically subscribed/unsubscribed. For example:
-+
-[source,xml]
-----
-<ExtRef intAddr="1-A:MUGO/GOINGGIO1.SPCSO6.stVal" serviceType="GOOSE" desc="Bay/Bus Close - 3 Pole"/>
-<ExtRef intAddr="1-A:MUGO/GOINGGIO1.SPCSO6.q" serviceType="GOOSE" desc="Bay/Bus Close - 3 Pole (Quality)"/>
-----
 
 == Using the Plugin
 
 Follow the steps in <<Loading the Plugin>>.
 Once the plugin is loaded:
 
+. Open a document.
+
 . The plugin provides a menu option. Go to the menu in the top left and click on the plugin name.
 
-. Then click enabled and then "Close".
-+
-image::../../test/screenshots/baseline/configure the plugin is initially disabled-Chromium.png[]
+. Select an interval, number of backups and then enable the plugin.
 
-. In either the publisher or subscriber view, click on the settings icon (a cog) and check that "Allow External Plugins" is checked.
+. Click "Choose Folder" at the bottom of the dialog and give edit writes to a folder of your choice.
 
-. The plugin will automatic add or remove subscriptions as required.
+. While edits are being made a backup will be written at the frequency indicated.
+Once the maximum number of backups is reached, the oldest is deleted first.
 
 == Loading the Plugin
 
