@@ -276,6 +276,10 @@ export default class AutomaticBackup extends LitElement {
           dialogAction="ok"
           icon="folder_open"
           ?disabled=${!this.enabled}
+          @click=${async () => {
+            this.interval = parseInt(this.intervalUI?.value ?? '10', 10);
+            this.count = parseInt(this.countUI?.value ?? '6', 10);
+          }}
         ></mwc-button>
         <mwc-button
           label="Cancel"
