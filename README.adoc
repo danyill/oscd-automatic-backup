@@ -25,11 +25,13 @@
 
 == What is this?
 
-This is an OpenSCD core plugin to allow automatic backups of SCL files using the File System API. 
+This is an OpenSCD core plugin to allow automatic backups of SCL files using the File System Access API. 
 {uri-openscd-core-plugin-demo}[Try it out online]!
 
 * The user chooses the number and frequency of backups and allows the plugin to write to a specific folder.
 Backups are then taken when the plugin is active with the oldest removed first to ensure the number of backups does not exceed selected amount.
++
+CAUTION: The File System Access API is relatively new and as of October 2023 is not supported in Firefox, Safari or in any mobile web browsers.
 
 * This is a plugin for {uri-openscd-core}[open-scd-core], the core editor engine for {uri-openscd}[OpenSCD].
 
