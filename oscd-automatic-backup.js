@@ -6531,7 +6531,7 @@ class AutomaticBackup extends s$2 {
         window.addEventListener('oscd-edit', () => {
             if (this.usedDirectory === '' && this.enabled) {
                 this.userMessage = `You have automatic backups enabled but a directory has not been selected, 
-        please either disable or choose a directory by going to Menu &gt; Automatic Backups.`;
+        please either disable or choose a directory by going to Automatic Backups in the Menu.`;
                 if (this.userMessageUI)
                     this.userMessageUI.show();
             }
